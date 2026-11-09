@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fae1b3"/>
+      <stop offset="100%" stop-color="#d78b59"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" rx="40" fill="url(#bg)"/>
+  <ellipse cx="400" cy="380" rx="280" ry="120" fill="#f8d4a2" stroke="#cf8f5b" stroke-width="14"/>
+  <path d="M180 330C180 260 245 200 320 200C395 200 460 260 460 330C460 370 420 430 380 430C340 430 300 370 260 370C220 370 180 350 180 330Z" fill="#fff2e2" stroke="#cd8c54" stroke-width="12"/>
+  <text x="50%" y="50%" text-anchor="middle" font-family="Arial, sans-serif" font-size="56" fill="#87411b" font-weight="700">Blueberry</text>
+  <text x="50%" y="68%" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#87411b" opacity="0.85">Muffin</text>
+</svg>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aromea Café | Exquisite Coffee & Bites</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Home specific styles */
+        .hero {
+            background: linear-gradient(rgba(74, 58, 49, 0.7), rgba(74, 58, 49, 0.7)), url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover;
+            height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero h1 {
+            color: var(--white);
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .hero .btn-outline {
+            color: var(--white);
+            border-color: var(--white);
+        }
+
+        .hero .btn-outline:hover {
+            background-color: var(--white);
+            color: var(--primary-color);
+        }
+
+        /* SDG Section */
+        .sdg-section {
+            padding: 80px 0;
+            background-color: var(--bg-color);
+        }
+
+        .sdg-section .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .sdg-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .sdg-card {
+            background-color: var(--white);
+            padding: 40px 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .sdg-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .sdg-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--light-bg);
+            color: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+        }
+
+        .sdg-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .sdg-card p {
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-mug-hot"></i> Aromea
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="catalogue.html">Catalogue</a></li>
+                <li><a href="reservation.html">Reservations</a></li>
+                <li><a href="feedback.html">Feedback</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+
+            <div class="nav-icons">
+                <a href="login.html" title="Login / Register"><i class="fa-regular fa-user"></i></a>
+                <a href="cart.html" title="View Cart">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+                </a>
+                <div class="mobile-menu-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Awaken Your Senses</h1>
+            <p>Experience the perfect blend of ethically sourced coffee and artisanal delights in a warm, inviting atmosphere.</p>
+            <div class="btn-group">
+                <a href="menu.html" class="btn">View Menu</a>
+                <a href="reservation.html" class="btn btn-outline">Book a Table</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Today's Special Section -->
+    <section class="featured-section light">
+        <div class="container">
+            <div class="section-header">
+                <h2>Today's Specials</h2>
+                <p>Curated culinary creations made fresh daily.</p>
+            </div>
+            <div class="menu-grid" id="specials-grid">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Sellers Section -->
+    <section class="featured-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Customer Favorites</h2>
+                <p>Our most loved and frequently bought items.</p>
+            </div>
+            <div class="menu-grid" id="bestsellers-grid">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SDG Integration Section -->
+    <section class="sdg-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Commitment to Sustainability</h2>
+                <p>Enjoy your favorite coffee while caring for our planet. We align with global sustainable development goals.</p>
+            </div>
+            
+            <div class="sdg-grid">
+                <!-- Eco-friendly Packaging -->
+                <div class="sdg-card">
+                    <div class="sdg-icon">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <h3>Eco-Friendly Packaging</h3>
+                    <p>100% of our takeaway cups, boxes, and straws are made from biodegradable and compostable materials to reduce plastic waste.</p>
+                </div>
+                
+                <!-- Healthy Options -->
+                <div class="sdg-card">
+                    <div class="sdg-icon">
+                        <i class="fa-solid fa-carrot"></i>
+                    </div>
+                    <h3>Healthy & Veg Options</h3>
+                    <p>We promote good health and well-being with a rich selection of plant-based, vegetarian, and organic gluten-free options.</p>
+                </div>
+
+                <!-- Ethical Sourcing -->
+                <div class="sdg-card">
+                    <div class="sdg-icon">
+                        <i class="fa-solid fa-earth-americas"></i>
+                    </div>
+                    <h3>Ethical Sourcing</h3>
+                    <p>We source our coffee beans directly from fair-trade farmers, ensuring sustainable agriculture and fair wages.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div class="logo" style="color: var(--bg-color); margin-bottom: 20px;">
+                        <i class="fa-solid fa-mug-hot" style="color: var(--accent-color);"></i> Aromea
+                    </div>
+                    <p>Pouring happiness into every cup since 2020. Your favorite neighborhood coffee shop.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="menu.html">Our Menu</a></li>
+                        <li><a href="reservation.html">Book a Table</a></li>
+                        <li><a href="catalogue.html">Search Items</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Opening Hours</h3>
+                    <ul class="footer-links">
+                        <li><span style="color: #ccc;">Mon - Fri:</span> 7:00 AM - 8:00 PM</li>
+                        <li><span style="color: #ccc;">Saturday:</span> 8:00 AM - 9:00 PM</li>
+                        <li><span style="color: #ccc;">Sunday:</span> 8:00 AM - 6:00 PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Aromea Café. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/menuData.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFeaturedItems('specials-grid', item => item.isSpecial, 'ribbon-special', "Today's Special");
+            renderFeaturedItems('bestsellers-grid', item => item.isBestseller, 'ribbon-bestseller', "Best Seller");
+        });
+
+        function renderFeaturedItems(containerId, filterFn, ribbonClass, ribbonText) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const items = (window.menuItems || []).map(item => window.normalizeMenuItem ? window.normalizeMenuItem(item) : item).filter(filterFn).slice(0, 4); // Show top 4
+            
+            items.forEach(item => {
+                const vegBadge = item.isVeg 
+                    ? `<span class="badge badge-veg"><i class="fa-solid fa-leaf"></i> Veg</span>` 
+                    : `<span class="badge badge-nonveg"><i class="fa-solid fa-drumstick-bite"></i> Non-Veg</span>`;
+                
+                const card = document.createElement('div');
+                card.className = 'menu-card';
+                card.innerHTML = `
+                    <div class="ribbon ${ribbonClass}">${ribbonText}</div>
+                    <div class="img-wrapper">
+                        <img src="${(typeof mapLocalImage === 'function') ? mapLocalImage(item.id || item.item_id || item.name) : item.image}" alt="${item.name}" class="menu-img">
+                    </div>
+                    <div class="menu-content">
+                        <div class="menu-header">
+                            <h3 class="menu-name">${item.name}</h3>
+                            <div class="menu-price">₹${item.price.toFixed(2)}</div>
+                        </div>
+                        <p class="menu-desc">${item.description}</p>
+                        <div class="menu-footer">
+                            <div class="badges">${vegBadge}</div>
+                            <button class="btn btn-add" onclick="addToCart(${item.id})">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addToCart(itemId) {
+            const item = window.menuItems.find(i => i.id === itemId || i.item_id === itemId);
+            if (!item) return;
+
+            const available = item.isAvailable ?? item.is_available;
+            if (!available) return;
+
+            let cart = JSON.parse(localStorage.getItem('aromea_cart')) || [];
+            
+            const existingItem = cart.find(i => i.id === itemId || i.item_id === itemId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...item, id: item.id || item.item_id, quantity: 1 });
+            }
+
+            localStorage.setItem('aromea_cart', JSON.stringify(cart));
+            updateCartBadge();
+            
+            window.showToast('Item added to cart!', 'success');
+        }
+    </script>
+</body>
+</html>

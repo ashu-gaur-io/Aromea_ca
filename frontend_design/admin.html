@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aromea Cafe - Cyber Admin Matrix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Background Animated Particles / Gradients -->
+    <div class="cyber-background">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+        <div class="glow glow-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="admin-wrapper">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="cyber-sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-coffee neon-icon"></i>
+                <h2>AROMEA<span class="highlight">CORE</span></h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-tab="dashboard-tab">
+                    <i class="fas fa-satellite-dish"></i> <span>Overview</span>
+                </button>
+                <button class="nav-btn" data-tab="orders-tab">
+                    <i class="fas fa-boxes-packing"></i> <span>Orders</span>
+                </button>
+                <button class="nav-btn" data-tab="reservations-tab">
+                    <i class="fas fa-calendar-check"></i> <span>Reservations</span>
+                </button>
+                <button class="nav-btn" data-tab="menu-tab">
+                    <i class="fas fa-utensils"></i> <span>Menu Matrix</span>
+                </button>
+                <button class="nav-btn" data-tab="users-tab">
+                    <i class="fas fa-users"></i> <span>User Nodes</span>
+                </button>
+                <button class="nav-btn" data-tab="feedback-tab">
+                    <i class="fas fa-comment-dots"></i> <span>Intel</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="cyber-btn danger"><i class="fas fa-power-off"></i> Disconnect</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="cyber-content">
+            <header class="content-header glass-panel">
+                <div class="header-status">
+                    <div class="status-dot blink"></div>
+                    <span>SYSTEM ONLINE</span>
+                </div>
+                <div class="admin-profile">
+                    <img src="images/admin-avatar.jpg" alt="" onerror="this.src='https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff'" class="avatar">
+                    <span id="admin-name">Admin_01</span>
+                </div>
+            </header>
+
+            <div class="tab-container">
+                
+                <!-- Dashboard Tab -->
+                <section id="dashboard-tab" class="tab-content active glass-panel">
+                    <h1 class="glitch" data-text="SYSTEM METRICS">SYSTEM METRICS</h1>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-shopping-cart stat-icon"></i>
+                            <div class="stat-details">
+                                <h3>Total Orders</h3>
+                                <p id="stat-orders">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-chair stat-icon"></i>
+                            <div class="stat-details">
+                                <h3>Reservations</h3>
+                                <p id="stat-reservations">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-users stat-icon"></i>
+                            <div class="stat-details">
+                                <h3>Active Users</h3>
+                                <p id="stat-users">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Orders Tab -->
+                <section id="orders-tab" class="tab-content glass-panel">
+                    <h2><i class="fas fa-boxes-packing"></i> Order Queue</h2>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Total (₹)</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-tbody">
+                                <!-- Dynamic JS Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Reservations Tab -->
+                <section id="reservations-tab" class="tab-content glass-panel">
+                    <h2><i class="fas fa-calendar-alt"></i> Reservation Protocol</h2>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Date/Time</th>
+                                    <th>Guests</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reservations-tbody">
+                                <!-- Dynamic JS Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Menu Tab -->
+                <section id="menu-tab" class="tab-content glass-panel">
+                    <div class="flex-header">
+                        <h2><i class="fas fa-utensils"></i> Menu Matrix</h2>
+                        <button class="cyber-btn success" id="add-menu-btn"><i class="fas fa-plus"></i> Add Entity</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price (₹)</th>
+                                    <th>Available</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="menu-tbody">
+                                <!-- Dynamic JS Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Users Tab -->
+                <section id="users-tab" class="tab-content glass-panel">
+                    <h2><i class="fas fa-users"></i> Network Nodes (Users)</h2>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody">
+                                <!-- Dynamic JS Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Feedback Tab -->
+                <section id="feedback-tab" class="tab-content glass-panel">
+                    <h2><i class="fas fa-comment-dots"></i> Intercepted Intel (Feedback)</h2>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Item Target</th>
+                                    <th>Rating</th>
+                                    <th>Message</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feedback-tbody">
+                                <!-- Dynamic JS Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/admin.js"></script>
+</body>
+</html>

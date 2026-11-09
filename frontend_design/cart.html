@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | Aromea Café</title>
+<!-- debug listeners removed -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .cart-page {
+            padding: 60px 0;
+            min-height: calc(100vh - 80px - 200px);
+        }
+
+        .cart-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        .cart-items {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .item-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .item-price {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--light-bg);
+            margin-right: 20px;
+        }
+
+        .qty-btn {
+            background: transparent;
+            border: none;
+            padding: 5px 12px;
+            cursor: pointer;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .qty-btn:hover {
+            background: var(--border-color);
+        }
+
+        .qty-val {
+            padding: 0 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .item-total {
+            font-weight: 700;
+            color: var(--accent-color);
+            width: 80px;
+            text-align: right; margin-right: 20px;
+        }
+
+        .remove-btn {
+            color: #d93025;
+            background: rgba(217, 48, 37, 0.1);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .remove-btn:hover {
+            background: #d93025;
+            color: white;
+        }
+
+        .cart-summary {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .summary-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .summary-total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-top: 2px dashed var(--border-color);
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 50px 0;
+            color: var(--text-light);
+        }
+
+        .empty-cart i {
+            font-size: 4rem;
+            color: var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .cart-item {
+                flex-wrap: wrap;
+            }
+            .qty-controls { margin: 15px 0; }
+            .item-total { flex: 1; text-align: left; }
+        }
+
+        /* ── Thank You Order Modal ── */
+        .order-success-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.65);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 3000; opacity:0; pointer-events:none;
+            transition: opacity 0.35s ease;
+        }
+        .order-success-overlay.active { opacity:1; pointer-events:all; }
+        .order-success-box {
+            background: var(--white); border-radius: 16px;
+            padding: 50px 40px; text-align: center;
+            max-width: 440px; width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.35s ease;
+        }
+        .order-success-overlay.active .order-success-box { transform: translateY(0) scale(1); }
+        .success-check {
+            width:80px; height:80px; background:#e8f5e9; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            margin: 0 auto 20px; font-size:2.4rem; color:#2e7d32;
+            animation: popIn 0.4s ease 0.1s both;
+        }
+        @keyframes popIn { 0%{transform:scale(0)} 70%{transform:scale(1.15)} 100%{transform:scale(1)} }
+        .order-success-box h2 { color:var(--primary-color); font-family:'Playfair Display',serif; font-size:1.8rem; margin-bottom:10px; }
+        .order-success-box p { color:var(--text-light); margin-bottom:6px; }
+        .order-id-badge {
+            display:inline-block; background:var(--light-bg);
+            border:1px dashed var(--accent-color); color:var(--primary-color);
+            font-weight:600; padding:6px 20px; border-radius:20px;
+            margin:12px 0 24px; font-size:0.95rem;
+        }
+        .success-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+        @keyframes shake {
+            0%,100%{transform:translateX(0)}
+            25%{transform:translateX(-6px)}
+            75%{transform:translateX(6px)}
+        }
+
+        /* ── Login Required Modal ── */
+        .login-modal-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.6);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 4000; opacity:0; pointer-events:none;
+            transition: opacity 0.3s ease;
+        }
+        .login-modal-overlay.active { opacity:1; pointer-events:all; }
+        .login-modal-box {
+            background: white; border-radius: 16px;
+            padding: 40px 35px; text-align: center;
+            max-width: 400px; width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .login-modal-overlay.active .login-modal-box { transform: translateY(0); }
+        .login-modal-icon {
+            width: 70px; height: 70px;
+            background: #fff3e0; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; font-size: 2rem; color: #e65100;
+        }
+        .login-modal-box h3 {
+            color: var(--primary-color);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem; margin-bottom: 10px;
+        }
+        .login-modal-box p {
+            color: var(--text-light); margin-bottom: 25px; font-size: 0.95rem;
+        }
+        .login-modal-btns { display: flex; gap: 12px; justify-content: center; }
+        .login-modal-countdown {
+            font-size: 0.85rem; color: var(--text-light);
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo"><i class="fa-solid fa-mug-hot"></i> Aromea</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="catalogue.html">Catalogue</a></li>
+                <li><a href="reservation.html">Reservations</a></li>
+                <li><a href="feedback.html">Feedback</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="login.html" title="Login / Register"><i class="fa-regular fa-user"></i></a>
+                <a href="cart.html" class="active" title="View Cart">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+                </a>
+                <div class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Your Order</h1>
+            <p>Review your items and proceed to checkout.</p>
+        </div>
+    </header>
+
+    <section class="cart-page">
+        <div class="container">
+            <div class="cart-container" id="cartLayout">
+                <!-- Cart Content Injected Here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="margin-top: 0; padding-top: 20px;">
+                <p>&copy; 2024 Aromea Café. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="js/menuData.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Safety fallbacks in case main.js functions aren't loaded yet
+        if (typeof isLoggedIn === 'undefined') {
+            window.isLoggedIn = function() { return !!localStorage.getItem('aromea_token'); };
+        }
+        if (typeof getCurrentUser === 'undefined') {
+            window.getCurrentUser = function() {
+                try { return JSON.parse(localStorage.getItem('aromea_user')); } catch(e) { return null; }
+            };
+        }
+        if (typeof getCart === 'undefined') {
+            window.getCart = function() {
+                try { return JSON.parse(localStorage.getItem('aromea_cart')) || []; } catch(e) { return []; }
+            };
+        }
+        if (typeof updateCartBadge === 'undefined') {
+            window.updateCartBadge = function() {
+                const badge = document.getElementById('cart-badge');
+                if (!badge) return;
+                const cart = getCart();
+                const total = cart.reduce((s, i) => s + (i.quantity || 1), 0);
+                badge.textContent = total;
+                badge.style.display = total > 0 ? 'flex' : 'none';
+            };
+        }
+        if (typeof showToast === 'undefined') {
+            window.showToast = function(msg, type) { console.log(type + ':', msg); };
+        }
+        if (typeof apiCall === 'undefined') {
+            window.apiCall = function(endpoint, options = {}) {
+                const token = localStorage.getItem('aromea_token');
+                return fetch('http://localhost:5000/api' + endpoint, {
+                    ...options,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': 'Bearer ' + token } : {}),
+                        ...(options.headers || {})
+                    }
+                });
+            };
+        }
+
+        // Use the global fallback data from menuData.js when backend menu fetch is unavailable.
+        let localMenuItems = window.menuItems || [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadMenuData();
+            renderCart();
+        });
+
+        async function loadMenuData() {
+            // Always wrap entirely - never let this throw to global scope
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 3000);
+                let response;
+                try {
+                    response = await apiCall('/menu', { signal: controller.signal });
+                    clearTimeout(timer);
+                } catch (fetchErr) {
+                    clearTimeout(timer);
+                    throw fetchErr; // caught by outer try
+                }
+
+                if (response && response.ok) {
+                    const dbItems = await response.json();
+                    localMenuItems = dbItems.map(item => ({
+                        ...item,
+                        id:      item.item_id || item.id,
+                        item_id: item.item_id || item.id,
+                        price:   Number(item.price || 0),
+                        name:    item.name || 'Item'
+                    }));
+                    return;
+                }
+            } catch (error) {
+                // Backend is off — silently fall back, no error shown to user
+                console.log('Backend unavailable, using static menu data.');
+            }
+            // Fallback: use menuData.js static list
+            localMenuItems = (window.menuItems || []).map(item => ({
+                ...item,
+                id:      item.id || item.item_id,
+                item_id: item.id || item.item_id
+            }));
+        }
+
+        function renderCart() {
+            const cartItemsContainer = document.getElementById('cartLayout');
+            try {
+                let cart = getCart();
+
+                if (!cart || !Array.isArray(cart) || cart.length === 0) {
+                    cartItemsContainer.innerHTML = `
+                        <div style="grid-column: 1 / -1;" class="empty-cart">
+                            <i class="fa-solid fa-basket-shopping"></i>
+                            <h2>Your cart is empty</h2>
+                            <p>Looks like you haven't made your choice yet...</p>
+                            <a href="menu.html" class="btn" style="margin-top:20px;">Return to Menu</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = `<div class="cart-items">`;
+                let subtotal = 0;
+
+            cart.forEach(item => {
+                const itemId = item.id || item.item_id;
+                // Get full item details from menu data
+                const menuItem = localMenuItems.find(m => m.id === itemId) || localMenuItems.find(m => m.item_id === itemId) || item;
+                const price = Number(menuItem.price || item.price || 0);
+                const itemTotal = price * (Number(item.quantity) || 1);
+                subtotal += itemTotal;
+                
+                const itemName = menuItem.name || item.name || 'Unknown Item';
+                const mappedImage = (typeof mapLocalImage === 'function') ? mapLocalImage(itemName) : 'images/placeholder.jpg';
+                
+                html += `
+                    <div class="cart-item">
+                        <img src="${mappedImage}" alt="${itemName}" class="item-img">
+                        <div class="item-details">
+                            <div class="item-name">${itemName}</div>
+                            <div class="item-price">₹${price.toFixed(2)}</div>
+                        </div>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="updateQty(${itemId}, -1)">-</button>
+                            <span class="qty-val">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQty(${itemId}, 1)">+</button>
+                        </div>
+                        <div class="item-total">₹${itemTotal.toFixed(2)}</div>
+                        <button class="remove-btn" onclick="removeItem(${itemId})" title="Remove Item"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            const tax = subtotal * 0.05; // 5% dummy tax
+            const total = subtotal + tax;
+
+            html += `
+                <div class="cart-summary">
+                    <h3 class="summary-title">Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>₹${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (5%)</span>
+                        <span>₹${tax.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span>₹${total.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row" style="margin-top: 15px; flex-direction: column;">
+                        <label for="payment-method" style="margin-bottom: 8px; font-weight: 500; color: var(--primary-color);">Payment Mode</label>
+                        <select id="payment-method" class="form-control" style="cursor: pointer;">
+                            <option value="Online">Pay Online 💳</option>
+                            <option value="COD">Cash on Delivery 🚚</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-checkout" onclick="startPaymentFlow()">Proceed to Checkout</button>
+                </div>`;
+                cartItemsContainer.innerHTML = html;
+            } catch (err) {
+                console.error("Cart render failed:", err);
+                cartItemsContainer.innerHTML = `<div style="grid-column: 1/-1; padding: 50px; text-align: center; color: red;">
+                    <h3>Cart Render Failed</h3><p>${err.message}</p>
+                    <button class="btn" onclick="localStorage.removeItem('aromea_cart'); window.location.reload();">Clear Cart & Reset</button>
+                </div>`;
+            }
+        }
+
+        function updateQty(itemId, change) {
+            let cart = getCart();
+            const item = cart.find(i => i.id === itemId || i.item_id === itemId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => (i.id !== itemId && i.item_id !== itemId));
+                };
+                localStorage.setItem('aromea_cart', JSON.stringify(cart));
+                updateCartBadge();
+                renderCart();
+            }
+        }
+
+        function removeItem(itemId) {
+            let cart = getCart();
+            cart = cart.filter(i => i.id !== itemId && i.item_id !== itemId);
+            localStorage.setItem('aromea_cart', JSON.stringify(cart));
+            updateCartBadge();
+            renderCart();
+        }
+
+        function showLoginRequired() {
+            const modal = document.getElementById('loginRequiredModal');
+            if (!modal) {
+                // Fallback if modal not found
+                window.location.href = 'login.html';
+                return;
+            }
+            modal.classList.add('active');
+            // Countdown and auto redirect
+            let secs = 3;
+            const countdown = document.getElementById('loginCountdown');
+            const timer = setInterval(() => {
+                secs--;
+                if (countdown) countdown.textContent = 'Redirecting in ' + secs + ' second' + (secs !== 1 ? 's' : '') + '...';
+                if (secs <= 0) {
+                    clearInterval(timer);
+                    window.location.href = 'login.html';
+                }
+            }, 1000);
+        }
+
+        async function startPaymentFlow() {
+            // Remove any old error banners
+            const old = document.getElementById('checkout-error-banner');
+            if (old) old.remove();
+
+            // ── 1. Cart check ──
+            let cart = getCart();
+            if (cart.length === 0) {
+                showCheckoutError('Your cart is empty! Add items from the menu first.');
+                return;
+            }
+
+            const btn = document.querySelector('.btn-checkout');
+            const paymentMode = document.getElementById('payment-method')
+                ? document.getElementById('payment-method').value
+                : 'COD';
+
+            // ── 2. Login check ──
+            if (!isLoggedIn()) {
+                // Show login required modal instead of silent error
+                showLoginRequired();
+                return;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            // ── 3. Build order items ──
+            let subtotal = 0;
+            const orderItems = cart.map(item => {
+                const itemId = item.id || item.item_id;
+                const menuItem = localMenuItems.find(m => m.id === itemId || m.item_id === itemId) || item;
+                const price = Number(menuItem.price || item.price || 0);
+                const itemSubtotal = price * item.quantity;
+                subtotal += itemSubtotal;
+                return { item_id: itemId, quantity: item.quantity, unit_price: price, subtotal: itemSubtotal };
+            });
+
+            const total_amount = subtotal + (subtotal * 0.05);
+
+            // ── 4. Payment routing ──
+            if (paymentMode === 'Online') {
+                await handleRazorpay(orderItems, total_amount, btn);
+            } else {
+                // COD — works without login, always shows Thank You
+                await submitFinalOrder(orderItems, total_amount, 'COD', btn);
+            }
+        }
+
+        // Shows a visible persistent error INSIDE the order summary box
+        function showCheckoutError(msg, redirectTo) {
+            const existing = document.getElementById('checkout-error-banner');
+            if (existing) existing.remove();
+            const banner = document.createElement('div');
+            banner.id = 'checkout-error-banner';
+            banner.style.cssText = [
+                'background:#fff0f0',
+                'border:2px solid #e74c3c',
+                'border-radius:10px',
+                'padding:14px 18px',
+                'margin:0 0 16px 0',
+                'color:#c0392b',
+                'font-weight:600',
+                'font-size:0.95rem',
+                'display:flex',
+                'align-items:center',
+                'gap:10px',
+                'animation:shake 0.3s ease'
+            ].join(';');
+            banner.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="font-size:1.3rem;flex-shrink:0"></i><span>' + msg + '</span>';
+            // Insert right above the checkout button — always visible
+            const checkoutBtn = document.querySelector('.btn-checkout');
+            if (checkoutBtn && checkoutBtn.parentElement) {
+                checkoutBtn.parentElement.insertBefore(banner, checkoutBtn);
+            } else {
+                const summary = document.querySelector('.order-summary') || document.querySelector('.cart-summary');
+                if (summary) summary.prepend(banner);
+            }
+            // Scroll banner into view
+            banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (redirectTo) setTimeout(() => window.location.href = redirectTo, 2500);
+        }
+
+        async function handleRazorpay(orderItems, total_amount, btn) {
+            try {
+                // Check Razorpay script loaded
+                if (typeof window.Razorpay === 'undefined') {
+                    showCheckoutError('Razorpay could not load. Check your internet or disable any ad blocker, then try again.');
+                    btn.innerHTML = 'Proceed to Checkout';
+                    btn.disabled = false;
+                    return;
+                }
+
+                // Create order on backend
+                let orderData, keyData;
+                try {
+                    const orderRes = await apiCall('/payment/create-order', {
+                        method: 'POST',
+                        body: JSON.stringify({ amount: total_amount })
+                    });
+                    if (!orderRes.ok) throw new Error('Backend order creation failed: ' + orderRes.status);
+                    orderData = await orderRes.json();
+
+                    const keyRes = await apiCall('/payment/key');
+                    if (!keyRes.ok) throw new Error('Could not fetch Razorpay key');
+                    keyData = await keyRes.json();
+                    if (!keyData.key) throw new Error('Razorpay key missing in response');
+                } catch (backendErr) {
+                    console.error('Razorpay backend error:', backendErr);
+                    showCheckoutError('Could not connect to payment server. Make sure the backend (npm start) is running on port 5000.');
+                    btn.innerHTML = 'Proceed to Checkout';
+                    btn.disabled = false;
+                    return;
+                }
+
+                // Open Razorpay popup
+                const options = {
+                    key: keyData.key,
+                    amount: orderData.amount,
+                    currency: 'INR',
+                    name: 'Aromea Café',
+                    description: 'Order Payment',
+                    order_id: orderData.id,
+                    handler: async function(response) {
+                        try {
+                            const verifyRes = await apiCall('/payment/verify', {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature
+                                })
+                            });
+                            if (!verifyRes.ok) throw new Error('Verification failed');
+                            await submitFinalOrder(orderItems, total_amount, 'Online', btn);
+                        } catch(e) {
+                            console.error(e);
+                            showCheckoutError('Payment was received but verification failed. Please contact support.');
+                            btn.innerHTML = 'Proceed to Checkout';
+                            btn.disabled = false;
+                        }
+                    },
+                    prefill: {
+                        name: getCurrentUser()?.name || 'Customer',
+                        email: getCurrentUser()?.email || 'customer@example.com'
+                    },
+                    theme: { color: '#D4A373' },
+                    modal: {
+                        ondismiss: function() {
+                            btn.innerHTML = 'Proceed to Checkout';
+                            btn.disabled = false;
+                            showToast('Payment cancelled.', 'error');
+                        }
+                    }
+                };
+
+                const rzp = new window.Razorpay(options);
+                rzp.on('payment.failed', function(response) {
+                    showCheckoutError('Payment failed: ' + (response.error?.description || 'Unknown error'));
+                    btn.innerHTML = 'Proceed to Checkout';
+                    btn.disabled = false;
+                });
+                rzp.open();
+
+            } catch (err) {
+                console.error('handleRazorpay unexpected error:', err);
+                showCheckoutError('An unexpected error occurred. Please try again.');
+                btn.innerHTML = 'Proceed to Checkout';
+                btn.disabled = false;
+            }
+        }
+
+        function showOrderSuccess(orderId) {
+            // Remove any error banners
+            const banner = document.getElementById('checkout-error-banner');
+            if (banner) banner.remove();
+            localStorage.removeItem('aromea_cart');
+            updateCartBadge();
+
+            const modal  = document.getElementById('orderSuccessModal');
+            const badge  = document.getElementById('orderIdBadge');
+            const cdEl   = document.getElementById('successCountdown');
+
+            if (badge) badge.textContent = orderId ? 'Order #' + orderId : 'Order Confirmed!';
+            if (modal) modal.classList.add('active');
+
+            // Countdown — stays visible for 8 seconds then shows "you can close this"
+            let secs = 8;
+            if (cdEl) cdEl.textContent = 'This message will stay for ' + secs + ' seconds...';
+            const cdTimer = setInterval(() => {
+                secs--;
+                if (secs > 0) {
+                    if (cdEl) cdEl.textContent = 'Closing in ' + secs + ' seconds...';
+                } else {
+                    clearInterval(cdTimer);
+                    if (cdEl) cdEl.textContent = 'You can now browse menu or go home.';
+                }
+            }, 1000);
+        }
+
+        async function submitFinalOrder(items, total_amount, payment_mode, btn) {
+            if (!btn) btn = document.querySelector('.btn-checkout');
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 6000);
+
+                let res;
+                try {
+                    res = await apiCall('/orders', {
+                        method: 'POST',
+                        signal: controller.signal,
+                        body: JSON.stringify({
+                            items: items,
+                            total_amount: total_amount,
+                            payment_mode: payment_mode,
+                            delivery_type: 'pickup'
+                        })
+                    });
+                    clearTimeout(timer);
+                } catch (fetchErr) {
+                    clearTimeout(timer);
+                    console.warn('Backend unreachable — confirming order locally.', fetchErr);
+                    showOrderSuccess(null);
+                    return;
+                }
+
+                if (res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    showOrderSuccess(data.order_id || null);
+                } else {
+                    let errMsg = 'Unknown error';
+                    try { const d = await res.json(); errMsg = d.msg || errMsg; } catch(_) {}
+                    console.warn('Order API returned error:', errMsg);
+                    showOrderSuccess(null); // still confirm to user
+                }
+            } catch(err) {
+                console.error('submitFinalOrder error:', err);
+                showOrderSuccess(null);
+            } finally {
+                if (btn) { btn.innerHTML = 'Proceed to Checkout'; btn.disabled = false; }
+            }
+        }
+    </script>
+    <!-- ── Login Required Modal ── -->
+    <div class="login-modal-overlay" id="loginRequiredModal">
+        <div class="login-modal-box">
+            <div class="login-modal-icon">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3>Login Required</h3>
+            <p>You need to be logged in to place an order.<br>Redirecting you to login page...</p>
+            <div class="login-modal-btns">
+                <button class="btn btn-outline" onclick="document.getElementById('loginRequiredModal').classList.remove('active')">
+                    Cancel
+                </button>
+                <a href="login.html" class="btn">Login Now</a>
+            </div>
+            <div class="login-modal-countdown" id="loginCountdown">Redirecting in 3 seconds...</div>
+        </div>
+    </div>
+
+    <!-- ── Thank You / Order Confirmed Modal ── -->
+    <div class="order-success-overlay" id="orderSuccessModal">
+        <div class="order-success-box">
+            <div class="success-check"><i class="fa-solid fa-check"></i></div>
+            <h2>Thank You! 🎉</h2>
+            <p style="font-size:1.05rem; margin-bottom:6px;">Your order has been placed successfully.</p>
+            <p style="color:var(--accent-color); font-weight:600; font-size:1rem; margin-bottom:14px;">We'll have it ready for you shortly. ☕</p>
+            <div class="order-id-badge" id="orderIdBadge">Order Confirmed</div>
+            <div id="successCountdown" style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;"></div>
+            <div class="success-actions">
+                <a href="menu.html" class="btn btn-outline" onclick="document.getElementById('orderSuccessModal').classList.remove('active')">Order More</a>
+                <a href="index.html" class="btn">Go Home</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

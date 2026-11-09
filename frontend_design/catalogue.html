@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue & Search | Aromea Café</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .catalogue-page {
+            padding: 40px 0 80px;
+        }
+
+        .filter-bar {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.2);
+        }
+
+        .category-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--primary-color);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--accent-color);
+            color: var(--white);
+            border-color: var(--accent-color);
+        }
+
+        /* Menu card styles explicitly for catalogue */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .menu-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .menu-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .menu-content { padding: 20px; }
+        .menu-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .menu-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+        .menu-price { color: var(--accent-color); font-weight: 700; font-size: 1.1rem; }
+        .menu-desc { color: var(--text-light); font-size: 0.9rem; margin-bottom: 15px; height: 45px; }
+        .menu-footer { display: flex; justify-content: space-between; align-items: center; }
+        
+        .badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; font-weight: 600; margin-right: 5px; }
+        .badge-veg { background-color: #e6f4ea; color: var(--success); border: 1px solid var(--success); }
+        .badge-nonveg { background-color: #fce8e6; color: #d93025; border: 1px solid #d93025; }
+        
+        .img-wrapper { position: relative; }
+        .out-of-stock { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        .btn-add { padding: 8px 15px; font-size: 0.9rem; }
+        .card-disabled { opacity: 0.7; pointer-events: none; }
+
+        .no-results {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-light);
+            grid-column: 1 / -1;
+            font-size: 1.2rem;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 2000;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo"><i class="fa-solid fa-mug-hot"></i> Aromea</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="catalogue.html" class="active">Catalogue</a></li>
+                <li><a href="reservation.html">Reservations</a></li>
+                <li><a href="feedback.html">Feedback</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="login.html" title="Login / Register"><i class="fa-regular fa-user"></i></a>
+                <a href="cart.html" title="View Cart">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+                </a>
+                <div class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Product Catalogue</h1>
+            <p>Search and filter to find exactly what you're craving.</p>
+        </div>
+    </header>
+
+    <section class="catalogue-page">
+        <div class="container">
+            
+            <div class="filter-bar">
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search for coffee, snacks...">
+                </div>
+                <div class="category-filters" id="categoryFilters">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <!-- other buttons generated via JS -->
+                </div>
+            </div>
+
+            <div class="menu-grid" id="catalogue-grid">
+                <!-- Items injected here -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="margin-top: 0; padding-top: 20px;">
+                <p>&copy; 2024 Aromea Café. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <div id="toast" class="toast"><i class="fa-solid fa-check-circle"></i> Item added to cart!</div>
+
+    <script src="js/menuData.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Initialize once menuItems is ready
+        function initializeCatalogue() {
+            console.log('Initializing catalogue...');
+            console.log('window.menuItems available:', !!window.menuItems, 'items count:', (window.menuItems || []).length);
+            
+            initFilters();
+            renderCatalogue(window.menuItems || []);
+            
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', handleFilter);
+            }
+        }
+
+        // Wait for DOM and menuItems
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(initializeCatalogue, 300);
+            });
+        } else {
+            setTimeout(initializeCatalogue, 300);
+        }
+        
+        function getCategoryName(item) {
+            return item.category || item.category_name || 'Other';
+        }
+
+        function normalizeItem(item) {
+            return {
+                ...item,
+                category: getCategoryName(item),
+                isVeg: item.isVeg ?? (item.is_veg===1||item.is_veg===true||item.isVeg===true) ?? false,
+                isAvailable: item.isAvailable ?? (item.is_available===1||item.is_available===true||item.isAvailable===true) ?? false,
+                isSpecial: item.isSpecial ?? item.is_special ?? false,
+                isBestseller: item.isBestseller ?? item.is_bestseller ?? false,
+                image: (typeof mapLocalImage === 'function' ? mapLocalImage(item.item_id || item.id || item.name || '') : item.image || 'images/placeholder.jpg'),
+                name: item.name || item.item_name || 'Unnamed Item',
+                description: item.description || item.item_description || ''
+            };
+        }
+
+        function initFilters() {
+            const filtersContainer = document.getElementById('categoryFilters');
+            if (!filtersContainer) {
+                console.error('Filter container not found');
+                return;
+            }
+            
+            // Get all unique categories from menu items
+            const menuData = (window.menuItems || []).map(normalizeItem);
+            console.log('Creating filters for categories...');
+            
+            const categories = [...new Set(menuData.map(item => item.category))].sort();
+            console.log('Categories:', categories);
+
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.dataset.category = cat;
+                btn.textContent = cat;
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    handleFilter();
+                });
+                filtersContainer.appendChild(btn);
+            });
+
+            // "All" button listener
+            const allBtn = document.querySelector('.filter-btn[data-category="all"]');
+            if (allBtn) {
+                allBtn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    handleFilter();
+                });
+            }
+        }
+
+        function handleFilter() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            const activeBtn = document.querySelector('.filter-btn.active');
+            const activeCategory = activeBtn ? activeBtn.dataset.category : 'all';
+            
+            const menuData = (window.menuItems || []).map(normalizeItem);
+            const filteredItems = menuData.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) || item.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
+                return matchesSearch && matchesCategory;
+            });
+
+            renderCatalogue(filteredItems);
+        }
+
+        function renderCatalogue(items) {
+            const grid = document.getElementById('catalogue-grid');
+            grid.innerHTML = '';
+
+            if (items.length === 0) {
+                grid.innerHTML = '<div class="no-results"><i class="fa-solid fa-ghost fa-3x" style="color:var(--border-color);margin-bottom:15px;display:block;"></i>No items found matching your criteria.</div>';
+                return;
+            }
+
+            items.forEach((item, idx) => {
+                const normalized = normalizeItem(item);
+                const vegBadge = normalized.isVeg ? `<span class="badge badge-veg"><i class="fa-solid fa-leaf"></i> Veg</span>` : `<span class="badge badge-nonveg"><i class="fa-solid fa-drumstick-bite"></i> Non-Veg</span>`;
+                const availabilityTag = !normalized.isAvailable ? `<span class="out-of-stock">Sold Out</span>` : '';
+                const btnClass = normalized.isAvailable ? 'btn btn-add' : 'btn btn-add card-disabled';
+                const btnText = normalized.isAvailable ? 'Add to Cart' : 'Unavailable';
+
+                let ribbonHTML = '';
+                if (normalized.isSpecial) ribbonHTML = "<div class='ribbon ribbon-special'>Today's Special</div>";
+                else if (normalized.isBestseller) ribbonHTML = "<div class='ribbon ribbon-bestseller'>Best Seller</div>";
+
+                const imageSrc = (typeof mapLocalImage === 'function') ? mapLocalImage(normalized.item_id || normalized.id || normalized.name || '') : (normalized.image || 'images/placeholder.jpg');
+                const card = document.createElement('div');
+                card.className = 'menu-card';
+                card.style.animationDelay = `${idx * 0.05}s`;
+                card.innerHTML = `
+                    ${ribbonHTML}
+                    <div class="img-wrapper">
+                        <img src="${imageSrc}" alt="${normalized.name}" class="menu-img">
+                        ${availabilityTag}
+                    </div>
+                    <div class="menu-content">
+                        <div class="menu-header">
+                            <h3 class="menu-name">${normalized.name}</h3>
+                            <div class="menu-price">₹${Number(normalized.price || 0).toFixed(2)}</div>
+                        </div>
+                        <p class="menu-desc">${normalized.description}</p>
+                        <div class="menu-footer">
+                            <div class="badges">
+                                ${vegBadge}
+                            </div>
+                            <button class="${btnClass}" onclick="addToCart(${normalized.id || normalized.item_id})">${btnText}</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        function addToCart(itemId) {
+            const menuItems = window.menuItems || [];
+            const item = menuItems.find(i => i.id === itemId || i.item_id === itemId);
+            if (!item || !(item.isAvailable ?? (item.is_available===1||item.is_available===true||item.isAvailable===true))) return;
+
+            let cart = JSON.parse(localStorage.getItem('aromea_cart')) || [];
+            
+            const existingItem = cart.find(i => i.id === itemId || i.item_id === itemId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...item, id: item.id || item.item_id, quantity: 1 });
+            }
+
+            localStorage.setItem('aromea_cart', JSON.stringify(cart));
+            updateCartBadge();
+            showToast('Item added to cart!', 'success');
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
