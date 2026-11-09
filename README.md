@@ -62,17 +62,17 @@ flowchart LR
 
 <div align="center">
 
-<img src="screenshots/home.png" alt="Home page" width="100%">
+<img src="home.png" alt="Home page" width="100%">
 
 <br><br>
 
 | Menu with Veg / Non-Veg tags | High-protein section |
 |:---:|:---:|
-| <img src="screenshots/menu.png" alt="Menu"> | <img src="screenshots/high-protein.png" alt="High protein dishes"> |
+| <img src="menu.png" alt="Menu"> | <img src="high-protein.png" alt="High protein dishes"> |
 
 | Table reservation | Feedback form |
 |:---:|:---:|
-| <img src="screenshots/reservation.png" alt="Reservation"> | <img src="screenshots/feedback.png" alt="Feedback"> |
+| <img src="reservation.png" alt="Reservation"> | <img src="feedback.png" alt="Feedback"> |
 
 </div>
 
